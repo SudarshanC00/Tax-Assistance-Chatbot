@@ -26,7 +26,7 @@ def get_vectorstore(text_chunks):
     return vectorstore
 
 if __name__ == '__main__':
-    folder_path = "/teamspace/studios/this_studio/documents"
+    folder_path = "/Users/sudarshanc/Projects/Tax-Assistance-Chatbot/documents"
     documents = load_documents(folder_path)
     text_chunks = text_split(documents)
     vectorstore = get_vectorstore(text_chunks)

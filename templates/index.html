@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Assistant Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+        .chat-bubble {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+        }
+        .user-bubble {
+            background-color: #4caf50;
+            color: white;
+            text-align: right;
+        }
+        .bot-bubble {
+            background-color: #2e2e2e;
+            color: white;
+            text-align: left;
+        }
+        .input-box {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+        }
+        .send-btn {
+            padding: 10px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tax Assistant Chatbot</h1>
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" class="input-box" placeholder="Type your query here...">
+        <button onclick="sendMessage()" class="send-btn">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+            if (!userInput) return;
+            
+            let chatBox = document.getElementById("chat-box");
+
+            // Add user message
+            let userBubble = document.createElement("div");
+            userBubble.classList.add("chat-bubble", "user-bubble");
+            userBubble.innerText = userInput;
+            chatBox.appendChild(userBubble);
+
+            document.getElementById("user-input").value = "";
+
+            // Send request to backend
+            try {
+                let response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: userInput })
+                });
+
+                let result = await response.json();
+                let botMessage = result.response || "Sorry, I couldn't process your request.";
+
+                // Add bot response
+                let botBubble = document.createElement("div");
+                botBubble.classList.add("chat-bubble", "bot-bubble");
+
+                botBubble.innerHTML = botMessage;
+                chatBox.appendChild(botBubble);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
